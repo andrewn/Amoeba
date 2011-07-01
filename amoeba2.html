@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <title>AvantiTutti HTML5 Test - Amoeba</title>
+	<script type="text/javascript" src="../lib/tweenedValue.js"></script>
+
+      <script type="text/javascript">
+
+		var canvas;
+		var ctx;
+        var points = new Array();
+        var n = 20;
+        var angle = 2*Math.PI/n;
+        var l = 35; // Handler length
+        var rint = 50;
+        var rext = 300;
+        var debug = false;
+		var red = new TweenedValue(255*Math.random(),255*Math.random(),100,"linear");
+		var green = new TweenedValue(255*Math.random(),255*Math.random(),100,"linear");
+		var blue = new TweenedValue(255*Math.random(),255*Math.random(),100,"linear");
+		
+		function init() {
+          canvas = document.getElementById('tutorial');
+          if (canvas.getContext){
+            ctx = canvas.getContext('2d');
+
+            for (var i = 0; i<n; i++) {
+				var r1 = (rext-rint)*Math.random()+rint;
+				var r2 = (rext-rint)*Math.random()+rint;
+            	points.push(new TweenedValue(r1,r2,50+50*Math.random(), "accelerated"));
+            }
+
+			setInterval("draw()",50);
+			}
+		}
+
+        function draw(){
+	
+			// Actualizo el valor de los radios
+            for (var i = 0; i<n; i++) {
+            	points[i].update();
+				if (points[i].finished()) {
+					points[i].retarget((rext-rint)*Math.random()+rint)
+				}
+            }
+
+			// Actualizo el color
+			red.update();
+			if (red.finished()) red.retarget(255*Math.random())	;
+			green.update();
+			if (green.finished()) green.retarget(255*Math.random());
+			blue.update();						
+			if (blue.finished()) blue.retarget(255*Math.random());
+			
+			ctx.clearRect (0,0,canvas.width,canvas.height);
+            ctx.translate(400,400);
+            
+            // Genero los vértices
+            
+            // Dibujo la forma
+            ctx.beginPath();
+            ctx.moveTo(0, points[0]);
+            for (var i = 1; i<n; i++) {
+              ctx.rotate(angle);
+              var r1 = points[i-1].val;
+              var r2 = points[i].val;
+              var h1x = r1*Math.sin(angle)-l*Math.cos(angle);
+              var h1y = r1*Math.cos(angle)+l*Math.sin(angle);
+              var h2x = l;
+              var h2y = r2;
+              var px = 0;
+              var py = r2;
+              ctx.bezierCurveTo(h1x,h1y,h2x,h2y,px,py);
+            }
+            ctx.rotate(angle);
+            var r1 = points[n-1].val;
+            var r2 = points[0].val;
+            ctx.bezierCurveTo(r1*Math.sin(angle)-l*Math.cos(angle),r1*Math.cos(angle)+l*Math.sin(angle),l,r2,0,r2);
+
+			var color = "rgb("+Math.round(red.val)+", "+Math.round(green.val)+","+Math.round(blue.val)+")";
+            ctx.fillStyle = color;
+			ctx.fill();
+
+            if (debug) {
+            // Dibujo los vértices y los handlers
+            for (var i = 0; i<n; i++) {
+              ctx.beginPath();
+              ctx.fillStyle = "#CCCCCC";
+              var r = points[i].val;
+              ctx.arc(0,r,3,0,2*Math.PI,false);
+              ctx.fill();
+              ctx.beginPath();
+              ctx.strokeStyle = "#FF9999";                            
+              ctx.moveTo(-l,r);
+              ctx.lineTo(l,r);
+              ctx.stroke();
+              ctx.rotate(angle);
+              
+            }
+            
+              // Dibujo el centro
+              ctx.beginPath();
+              ctx.strokeStyle = "#FFFFFF";              
+              ctx.moveTo(-5,-5);
+              ctx.lineTo(5,5);
+              ctx.moveTo(-5,5);
+              ctx.lineTo(5,-5);
+              ctx.stroke();
+            }
+
+            ctx.translate(-400,-400);
+          }
+      </script>
+
+      <style type="text/css">
+        canvas {}
+      </style>
+    </head>
+
+    <body onload="init();">
+      <canvas id="tutorial" width="800" height="800"></canvas>
+    </body>
+</html>
