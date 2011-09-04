@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>AvantiTutti HTML5 Test - Amoeba</title>
-	<script type="text/javascript" src="../lib/tweenedValue.js"></script>
+	<script type="text/javascript" src="./lib/tweenedValue.js"></script>
 
       <script type="text/javascript">
 
@@ -11,7 +11,7 @@
         var n = 20;
         var angle = 2*Math.PI/n;
         var l = 35; // Handler length
-        var rint = 50;
+        var rint = 200;
         var rext = 300;
         var debug = false;
 		var red = new TweenedValue(255*Math.random(),255*Math.random(),100,"linear");
@@ -29,7 +29,8 @@
             	points.push(new TweenedValue(r1,r2,50+50*Math.random(), "accelerated"));
             }
 
-			setInterval("draw()",50);
+			//setInterval("draw()",50);
+  draw();
 			}
 		}
 
